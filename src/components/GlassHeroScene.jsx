@@ -7,21 +7,22 @@ function WireframeMesh() {
 
   useFrame((_, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.15;
-      meshRef.current.rotation.y += delta * 0.2;
+      meshRef.current.rotation.x += delta * 0.12;
+      meshRef.current.rotation.y += delta * 0.18;
     }
   });
 
   return (
-    <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.8}>
-      <mesh ref={meshRef} scale={1.8}>
-        <torusKnotGeometry args={[1, 0.35, 96, 24]} />
+    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.6}>
+      {/* Positioned slightly up and right, scaled down to 0.9 */}
+      <mesh ref={meshRef} position={[1.8, 1.2, -1]} scale={0.9}>
+        <torusKnotGeometry args={[1, 0.3, 64, 16]} />
         <meshStandardMaterial
           wireframe
           color="#00f3ff"
           emissive="#00f3ff"
-          emissiveIntensity={0.6}
-          roughness={0.1}
+          emissiveIntensity={0.4}
+          roughness={0.2}
           metalness={0.8}
         />
       </mesh>
