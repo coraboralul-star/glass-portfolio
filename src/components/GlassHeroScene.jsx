@@ -1,11 +1,10 @@
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 
 function WireframeMesh() {
   const meshRef = useRef();
 
-  // Smooth rotational drift
   useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.x += delta * 0.15;
@@ -15,9 +14,8 @@ function WireframeMesh() {
 
   return (
     <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.8}>
-      <mesh ref={meshRef} scale={1.6}>
+      <mesh ref={meshRef} scale={1.8}>
         <torusKnotGeometry args={[1, 0.35, 96, 24]} />
-        {/* Sleek, glowing neon wireframe overlay */}
         <meshStandardMaterial
           wireframe
           color="#00f3ff"
@@ -31,57 +29,41 @@ function WireframeMesh() {
   );
 }
 
-function FloatingParticles() {
-  const count = 40;
-  
-  // Generate random positions once to save performance
-  const points = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    for (let i = 0; i < count * 3; i++) {
-      p[i] = (Math.random() - 0.5) * 10;
-    }
-    return p;
-  }, [count]);
-
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          count={count}
-          array={points}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.05}
-        color="#8a2be2"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-      />
-    </points>
-  );
-}
-
 export default function GlassHeroScene() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    // Detect screen width or mobile browser
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // MOBILE: Pure CSS ambient glow background (0% GPU usage, locked 120 FPS)
+  if (isMobile) {
+    return (
+      <div className="absolute inset-0 z-0 h-full w-full pointer-events-none overflow-hidden bg-[#050508]">
+        <div className="absolute -top-1/4 left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-[#00f3ff]/20 rounded-full blur-[100px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[250px] h-[250px] bg-[#8a2be2]/20 rounded-full blur-[100px]" />
+      </div>
+    );
+  }
+
+  // DESKTOP: Full 3D WebGL Scene
   return (
     <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
       <Canvas 
         camera={{ position: [0, 0, 7], fov: 45 }}
-        dpr={[1, 2]} // Capped at 2x for ultra-crisp mobile displays without lag
-        gl={{ 
-          powerPreference: "high-performance",
-          antialias: true,
-          alpha: true 
-        }}
+        dpr={[1, 2]}
+        gl={{ powerPreference: "high-performance", antialias: true }}
       >
         <ambientLight intensity={0.4} />
         <directionalLight position={[5, 5, 5]} intensity={1.5} color="#00f3ff" />
         <directionalLight position={[-5, -5, -5]} intensity={1} color="#8a2be2" />
-        
         <WireframeMesh />
-        <FloatingParticles />
       </Canvas>
     </div>
   );
