@@ -1,11 +1,11 @@
 import React, { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { MeshTransmissionMaterial, Float } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 
-function RefractiveMesh() {
+function WireframeMesh() {
   const meshRef = useRef();
 
-  // Smooth local rotation without overhead
+  // Smooth rotational drift
   useFrame((_, delta) => {
     if (meshRef.current) {
       meshRef.current.rotation.x += delta * 0.15;
@@ -13,32 +13,54 @@ function RefractiveMesh() {
     }
   });
 
-  // Detect iOS / mobile to dynamically drop heavy shader samples
-  const isMobile = useMemo(() => {
-    return typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  }, []);
-
   return (
-    <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
-      <mesh ref={meshRef} scale={isMobile ? 1.4 : 1.8}>
-        {/* Lower geometry segment count on mobile to save GPU cycles */}
-        <torusKnotGeometry args={[1, 0.3, isMobile ? 64 : 128, isMobile ? 16 : 32]} />
-        <MeshTransmissionMaterial
-          backside={false} // Disabled backside refraction for massive speedup
-          samples={isMobile ? 2 : 6} // Drastically reduces pixel sampling
-          resolution={isMobile ? 256 : 512} // Caps refraction texture size
-          thickness={0.4}
-          chromaticAberration={0.04}
-          anisotropy={0.05}
-          distortion={0.15}
-          distortionScale={0.1}
-          temporalDistortion={0.0} // Turned off expensive temporal noise
-          roughness={0.05}
-          color="#ffffff"
-          bg="#050508"
+    <Float speed={1.5} rotationIntensity={0.4} floatIntensity={0.8}>
+      <mesh ref={meshRef} scale={1.6}>
+        <torusKnotGeometry args={[1, 0.35, 96, 24]} />
+        {/* Sleek, glowing neon wireframe overlay */}
+        <meshStandardMaterial
+          wireframe
+          color="#00f3ff"
+          emissive="#00f3ff"
+          emissiveIntensity={0.6}
+          roughness={0.1}
+          metalness={0.8}
         />
       </mesh>
     </Float>
+  );
+}
+
+function FloatingParticles() {
+  const count = 40;
+  
+  // Generate random positions once to save performance
+  const points = useMemo(() => {
+    const p = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) {
+      p[i] = (Math.random() - 0.5) * 10;
+    }
+    return p;
+  }, [count]);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={count}
+          array={points}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        color="#8a2be2"
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+      />
+    </points>
   );
 }
 
@@ -47,22 +69,19 @@ export default function GlassHeroScene() {
     <div className="absolute inset-0 z-0 h-full w-full pointer-events-none">
       <Canvas 
         camera={{ position: [0, 0, 7], fov: 45 }}
-        // Caps DPI to prevent rendering at native 3x retina density on Pro Max
-        dpr={[1, 1.5]}
-        // Optimizes WebGL context settings for mobile GPUs
+        dpr={[1, 2]} // Capped at 2x for ultra-crisp mobile displays without lag
         gl={{ 
           powerPreference: "high-performance",
-          antialias: false, 
-          alpha: false,
-          stencil: false,
-          depth: true
+          antialias: true,
+          alpha: true 
         }}
       >
-        <ambientLight intensity={0.8} />
-        <directionalLight position={[5, 5, 5]} intensity={1.2} color="#00f3ff" />
-        <directionalLight position={[-5, -5, -5]} intensity={0.8} color="#8a2be2" />
+        <ambientLight intensity={0.4} />
+        <directionalLight position={[5, 5, 5]} intensity={1.5} color="#00f3ff" />
+        <directionalLight position={[-5, -5, -5]} intensity={1} color="#8a2be2" />
         
-        <RefractiveMesh />
+        <WireframeMesh />
+        <FloatingParticles />
       </Canvas>
     </div>
   );
