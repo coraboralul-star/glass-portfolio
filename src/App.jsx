@@ -94,7 +94,7 @@ const CV_DATA = {
 
   links: {
     email: "mailto:hollandboid1@gmail.com",
-    github: "https://github.com/coraboralul",
+    github: "https://github.com/coraboralul-star",
     pdfCv: "#"
   }
 };
@@ -120,8 +120,7 @@ export default function App() {
             <a href="#experience" className="hover:text-[#00f3ff] transition-colors">/TIMELINE</a>
             <a href="#skills" className="hover:text-[#00f3ff] transition-colors">/STACK</a>
           </nav>
-          <a href={CV_DATA.links.email} className="glass-card flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-white">
-            <span>{CV_DATA.header.status}</span>
+			<a href={CV_DATA.links.email} className="glass-card flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold text-white">            <span>{CV_DATA.header.status}</span>
             <span className="h-2 w-2 rounded-full bg-[#00ff66] animate-pulse"></span>
           </a>
         </header>
