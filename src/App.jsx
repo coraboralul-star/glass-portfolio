@@ -11,10 +11,10 @@ import GlassHeroScene from './components/GlassHeroScene';
 // ==========================================
 const CV_DATA = {
   header: {
-    name: "Boi-D Holland",
+    name: "YOUR NAME",
     title: "Vibe Coder & Systems Automator",
     status: "Available for Hire",
-    location: "Waiwhetu, Lower Hutt",
+    location: "Remote",
     bio: "High-velocity developer specializing in AutoHotkey automation, game memory analysis, AI agent workflows with Cursor & MCP, and rapid web prototyping. Shipped custom scripts, hosted web bots, and reverse-engineered game mechanics."
   },
   
@@ -28,7 +28,7 @@ const CV_DATA = {
     {
       role: "Automation & AI Workflow Engineer",
       company: "Independent Projects",
-      period: "2024 - Present",
+      period: "2024 — Present",
       description: "Focused on low-level script automation, memory debugging, modern AI tool integrations, and full-stack hosting.",
       highlights: [
         "Engineered advanced AutoHotkey (AHK) macros using direct input hooks and time-holding logic.",
@@ -52,7 +52,7 @@ const CV_DATA = {
     {
       role: "AI Model Experimentation & Research",
       company: "Early AI Workflows",
-      period: "June 2023 - June 2024",
+      period: "June 2023 — June 2024",
       description: "Initial foundational year experimenting with early LLM prompting, system instructions, and script generation.",
       highlights: [
         "Tested structural prompt frameworks and automated text generation with early ChatGPT iterations.",
@@ -88,13 +88,13 @@ const CV_DATA = {
     {
       degree: "Practical Game Reverse Engineering & Script Automation",
       school: "Self-Directed Projects & Independent Development",
-      year: "June 2023 - Present"
+      year: "June 2023 — Present"
     }
   ],
 
   links: {
-    email: "mailto:your.email@example.com",
-    github: "https://github.com",
+    email: "mailto:hollandboid1@gmail.com",
+    github: "https://github.com/coraboralul",
     pdfCv: "#"
   }
 };
@@ -103,7 +103,7 @@ export default function App() {
   return (
     <main className="relative min-h-screen w-full overflow-hidden bg-[#050508] text-gray-100">
       
-      {/* 3D Background Canvas */}
+      {/* 3D / Adaptive Background Canvas */}
       <GlassHeroScene />
 
       {/* Foreground Glass UI Overlay */}
