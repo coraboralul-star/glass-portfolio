@@ -11,7 +11,7 @@ import GlassHeroScene from './components/GlassHeroScene';
 // ==========================================
 const CV_DATA = {
   header: {
-    name: "YOUR NAME",
+    name: "Boi-D Holland",
     title: "Vibe Coder & Systems Automator",
     status: "Available for Hire",
     location: "Remote",
@@ -28,7 +28,7 @@ const CV_DATA = {
     {
       role: "Automation & AI Workflow Engineer",
       company: "Independent Projects",
-      period: "2024 — Present",
+      period: "2024 - Present",
       description: "Focused on low-level script automation, memory debugging, modern AI tool integrations, and full-stack hosting.",
       highlights: [
         "Engineered advanced AutoHotkey (AHK) macros using direct input hooks and time-holding logic.",
@@ -52,7 +52,7 @@ const CV_DATA = {
     {
       role: "AI Model Experimentation & Research",
       company: "Early AI Workflows",
-      period: "June 2023 — June 2024",
+      period: "June 2023 - June 2024",
       description: "Initial foundational year experimenting with early LLM prompting, system instructions, and script generation.",
       highlights: [
         "Tested structural prompt frameworks and automated text generation with early ChatGPT iterations.",
@@ -88,7 +88,7 @@ const CV_DATA = {
     {
       degree: "Practical Game Reverse Engineering & Script Automation",
       school: "Self-Directed Projects & Independent Development",
-      year: "June 2023 — Present"
+      year: "June 2023 - Present"
     }
   ],
 
