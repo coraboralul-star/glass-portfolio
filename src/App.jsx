@@ -95,7 +95,7 @@ const CV_DATA = {
   links: {
     email: "mailto:hollandboid1@gmail.com",
     github: "https://github.com/coraboralul-star",
-    pdfCv: "#"
+    pdfCv: "/Boi-D-Holland-CV.pdf"
   }
 };
 
@@ -152,8 +152,8 @@ export default function App() {
                 <Mail className="h-4 w-4 text-[#00f3ff]" />
                 <span>Get in Touch</span>
               </a>
-              <a href={CV_DATA.links.pdfCv} className="glass-card flex items-center gap-2 rounded-xl px-6 py-3 font-medium text-gray-300">
-                <FileText className="h-4 w-4 text-[#00ff66]" />
+			<a href={CV_DATA.links.pdfCv} download="Boi-D-Holland-CV.pdf" className="glass-card flex items-center gap-2 rounded-xl px-6 py-3 font-medium text-gray-300">                
+			<FileText className="h-4 w-4 text-[#00ff66]" />
                 <span>Download PDF CV</span>
               </a>
             </div>
