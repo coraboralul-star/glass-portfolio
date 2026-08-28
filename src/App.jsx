@@ -94,39 +94,55 @@ export default function App() {
   return (
     <>
       <AnimatePresence>
-        {loading && (
-          <motion.div
-            className="loader-screen"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center"
-            >
-              <p className="font-mono text-xs tracking-[0.25em] text-gray-500 uppercase mb-3">
-                Portfolio
-              </p>
-              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-                Boi-D Holland
-              </h1>
-              <div className="loader-bar mx-auto">
-                <motion.div
-                  className="loader-bar-fill"
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${progress * 100}%` }}
-                  transition={{ ease: 'linear', duration: 0.05 }}
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+	  {loading && (
+		<motion.div
+		  className="loader-screen"
+		  initial={{ opacity: 1 }}
+		  exit={{ opacity: 0, scale: 1.02 }}
+		  transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+		>
+		  {/* Goo background blobs */}
+		  <div className="loader-goo" />
+		  <div className="loader-goo-2" />
 
-      <main className="relative min-h-screen w-full overflow-hidden bg-[#050508] text-gray-100">
+		  <motion.div
+			initial={{ opacity: 0, y: 18, filter: 'blur(8px)' }}
+			animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+			transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+			className="relative z-10 text-center"
+		  >
+			<motion.p
+			  initial={{ opacity: 0 }}
+			  animate={{ opacity: 1 }}
+			  transition={{ delay: 0.15 }}
+			  className="font-mono text-[11px] tracking-[0.3em] text-violet-300/70 uppercase mb-4"
+			>
+			  Loading
+			</motion.p>
+
+			<motion.h1
+			  initial={{ opacity: 0, letterSpacing: '0.15em' }}
+			  animate={{ opacity: 1, letterSpacing: '0.02em' }}
+			  transition={{ delay: 0.25, duration: 0.8 }}
+			  className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
+			>
+			  Boi-D Holland
+			</motion.h1>
+
+			<div className="loader-bar mx-auto">
+			  <motion.div
+				className="loader-bar-fill"
+				initial={{ width: '0%' }}
+				animate={{ width: `${progress * 100}%` }}
+				transition={{ ease: 'linear', duration: 0.08 }}
+			  />
+			</div>
+		  </motion.div>
+		</motion.div>
+	  )}
+	</AnimatePresence>
+
+      <main className="relative min-h-screen w-full overflow-hidden bg-[#030305] text-gray-100">
         <GlassHeroScene />
 
         <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-6 py-8 sm:py-10">
