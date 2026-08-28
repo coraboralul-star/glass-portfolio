@@ -2,62 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-void: #000000;
+  --color-bone: #ffffff;
+  --color-ash: #9a9a9a;
+  --color-silver: #bdbdbd;
+  --color-iris: #8052ff;
+  --color-saffron: #ffb829;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background-color: #050508;
-  color: #f3f4f6;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  overflow-x: hidden;
+  background: var(--color-void);
+  color: var(--color-bone);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Refined glass */
-.glass-panel,
-.glass-card {
-  background: rgba(255, 255, 255, 0.03) !important;
-  backdrop-filter: blur(22px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.09) !important;
-  box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+/* Dala-style ultra-light body */
+.font-extralight {
+  font-weight: 200;
 }
 
-/* Desktop-only richer hover */
-@media (hover: hover) and (pointer: fine) {
-  .glass-card:hover {
-    background: rgba(255, 255, 255, 0.055) !important;
-    border-color: rgba(0, 243, 255, 0.32) !important;
-    box-shadow:
-      0 14px 40px rgba(0, 0, 0, 0.5),
-      0 0 28px rgba(0, 243, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-    transform: translateY(-3px);
-  }
+/* Primary pill button */
+.btn-iris {
+  background: var(--color-iris);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.9rem 1.4rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  transition: opacity 0.2s ease;
 }
 
-/* Slightly lighter glass on mobile for performance */
-@media (max-width: 767px) {
-  .glass-panel,
-  .glass-card {
-    backdrop-filter: blur(16px) saturate(140%) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
-  }
+.btn-iris:hover {
+  opacity: 0.9;
 }
 
-.section-label {
-  letter-spacing: 0.14em;
+/* Ghost text link */
+.ghost-link {
+  color: var(--color-ash);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
 }
 
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+.ghost-link:hover {
+  color: var(--color-bone);
+}
+
+/* Small amber label */
+.label-saffron {
+  color: var(--color-saffron);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
