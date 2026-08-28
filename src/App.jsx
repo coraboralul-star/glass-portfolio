@@ -1,6 +1,9 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Mail, FileText, ArrowUpRight } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Terminal, Cpu, Briefcase, GraduationCap, Mail, FileText, CheckCircle2, Code2
+} from 'lucide-react';
+import GlassHeroScene from './components/GlassHeroScene';
 
 const CV_DATA = {
   header: {
@@ -10,13 +13,11 @@ const CV_DATA = {
     location: "Remote",
     bio: "Developer focused on automation systems, process scripting, reverse engineering, and practical web tooling. Experienced building reliable AutoHotkey solutions, memory analysis workflows, production web applications, Discord bots, and efficient Python utilities."
   },
-
   metrics: [
     { label: "Primary Stack", value: "AHK + Python", detail: "Automation scripts & utilities" },
     { label: "Analysis", value: "Memory Tools", detail: "Debugging & offset mapping" },
     { label: "Delivery", value: "Full-Stack", detail: "Web apps, bots & hosting" }
   ],
-
   experience: [
     {
       role: "Automation & Systems Engineer",
@@ -53,30 +54,13 @@ const CV_DATA = {
       ]
     }
   ],
-
   skills: [
-    {
-      category: "Automation & Scripting",
-      items: ["AutoHotkey (AHK)", "Custom Macro Systems", "Python", "Input & Process Control"]
-    },
-    {
-      category: "Reverse Engineering & Analysis",
-      items: ["Cheat Engine", "Memory Analysis", "Debugging", "Offset Mapping"]
-    },
-    {
-      category: "Development Tooling",
-      items: ["Modern IDEs", "Context Protocols", "Structured Prompting", "Workflow Automation"]
-    },
-    {
-      category: "Web & Hosting",
-      items: ["Web Application Hosting", "Discord Bots", "Vite / React", "Tailwind CSS"]
-    },
-    {
-      category: "Design & UI",
-      items: ["Photopea", "Figma", "Adobe Creative Cloud", "Visual Design"]
-    }
+    { category: "Automation & Scripting", items: ["AutoHotkey (AHK)", "Custom Macro Systems", "Python", "Input & Process Control"] },
+    { category: "Reverse Engineering & Analysis", items: ["Cheat Engine", "Memory Analysis", "Debugging", "Offset Mapping"] },
+    { category: "Development Tooling", items: ["Modern IDEs", "Context Protocols", "Structured Prompting", "Workflow Automation"] },
+    { category: "Web & Hosting", items: ["Web Application Hosting", "Discord Bots", "Vite / React", "Tailwind CSS"] },
+    { category: "Design & UI", items: ["Photopea", "Figma", "Adobe Creative Cloud", "Visual Design"] }
   ],
-
   education: [
     {
       degree: "Applied Reverse Engineering & Automation Systems",
@@ -84,7 +68,6 @@ const CV_DATA = {
       year: "June 2023 – Present"
     }
   ],
-
   links: {
     email: "mailto:hollandboid1@gmail.com",
     github: "https://github.com/coraboralul-star",
@@ -92,179 +75,253 @@ const CV_DATA = {
   }
 };
 
-const fade = {
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
-};
-
 export default function App() {
+  const [loading, setLoading] = useState(true);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const start = Date.now();
+    const duration = 1600;
+    const tick = () => {
+      const p = Math.min(1, (Date.now() - start) / duration);
+      setProgress(p);
+      if (p < 1) requestAnimationFrame(tick);
+      else setTimeout(() => setLoading(false), 220);
+    };
+    requestAnimationFrame(tick);
+  }, []);
+
   return (
-    <main className="min-h-screen bg-black text-white">
-      {/* Subtle ambient particles (very light) */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-1/4 w-1 h-1 bg-[#8052ff]/40 rounded-full" />
-        <div className="absolute top-40 right-1/3 w-1 h-1 bg-[#ffb829]/30 rounded-full" />
-        <div className="absolute top-[60%] left-[15%] w-1 h-1 bg-[#8052ff]/30 rounded-full" />
-        <div className="absolute top-[75%] right-[20%] w-1 h-1 bg-[#ffb829]/25 rounded-full" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-5xl px-6 sm:px-8 pt-10 pb-24">
-
-        {/* Navigation */}
-        <header className="flex items-center justify-between mb-20 sm:mb-28">
-          <span className="text-sm font-medium tracking-wide text-white">
-            {CV_DATA.header.name}
-          </span>
-
-          <nav className="hidden sm:flex items-center gap-8">
-            <a href="#experience" className="ghost-link">Experience</a>
-            <a href="#skills" className="ghost-link">Skills</a>
-            <a href="#education" className="ghost-link">Education</a>
-          </nav>
-
-          <a href={CV_DATA.links.email} className="btn-iris text-xs">
-            {CV_DATA.header.status}
-          </a>
-        </header>
-
-        {/* Hero */}
-        <section className="mb-28 sm:mb-36">
-          <motion.div {...fade}>
-            <p className="label-saffron mb-5">{CV_DATA.header.title}</p>
-
-            <h1 className="text-[clamp(2.75rem,8vw,5.5rem)] font-normal leading-[1.05] tracking-[-0.035em] text-white max-w-3xl">
-              {CV_DATA.header.name}
-            </h1>
-
-            <p className="mt-8 text-lg sm:text-xl font-extralight leading-relaxed text-[#bdbdbd] max-w-xl">
-              {CV_DATA.header.bio}
-            </p>
-
-            <div className="mt-10 flex flex-wrap items-center gap-5">
-              <a href={CV_DATA.links.email} className="btn-iris inline-flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                Get in Touch
-              </a>
-              <a
-                href={CV_DATA.links.pdfCv}
-                download
-                className="ghost-link inline-flex items-center gap-1.5"
-              >
-                <FileText className="w-3.5 h-3.5" />
-                Download CV
-              </a>
-            </div>
-          </motion.div>
-
-          {/* Metrics - floating, no cards */}
-          <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-10 sm:gap-8">
-            {CV_DATA.metrics.map((m, i) => (
-              <motion.div key={i} {...fade} transition={{ delay: i * 0.08 }}>
-                <p className="text-2xl sm:text-3xl font-normal tracking-tight text-white">
-                  {m.value}
-                </p>
-                <p className="mt-2 text-sm text-[#9a9a9a]">{m.label}</p>
-                <p className="text-sm font-extralight text-[#bdbdbd] mt-0.5">{m.detail}</p>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Experience */}
-        <section id="experience" className="mb-28 sm:mb-36">
-          <motion.div {...fade}>
-            <p className="label-saffron mb-10">Experience</p>
-          </motion.div>
-
-          <div className="space-y-16 sm:space-y-20">
-            {CV_DATA.experience.map((exp, index) => (
-              <motion.div key={index} {...fade}>
-                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-4">
-                  <div>
-                    <h3 className="text-xl sm:text-2xl font-normal tracking-tight text-white">
-                      {exp.role}
-                    </h3>
-                    <p className="mt-1 text-[#8052ff]">{exp.company}</p>
-                  </div>
-                  <span className="text-sm text-[#9a9a9a] shrink-0">{exp.period}</span>
-                </div>
-
-                <p className="text-base font-extralight text-[#bdbdbd] max-w-2xl mb-6 leading-relaxed">
-                  {exp.description}
-                </p>
-
-                <ul className="space-y-3 max-w-2xl">
-                  {exp.highlights.map((item, hIndex) => (
-                    <li key={hIndex} className="flex gap-3 text-sm font-extralight text-[#9a9a9a] leading-relaxed">
-                      <span className="text-[#8052ff] mt-1.5 shrink-0">›</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Skills */}
-        <section id="skills" className="mb-28 sm:mb-36">
-          <motion.div {...fade}>
-            <p className="label-saffron mb-10">Technical Skills</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12">
-            {CV_DATA.skills.map((group, index) => (
-              <motion.div key={index} {...fade}>
-                <h3 className="text-sm font-medium text-white mb-4 tracking-wide">
-                  {group.category}
-                </h3>
-                <div className="flex flex-wrap gap-x-4 gap-y-2">
-                  {group.items.map((skill) => (
-                    <span key={skill} className="text-sm font-extralight text-[#9a9a9a]">
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Education */}
-        <section id="education" className="mb-20">
-          <motion.div {...fade}>
-            <p className="label-saffron mb-10">Education & Development</p>
-          </motion.div>
-
-          {CV_DATA.education.map((edu, index) => (
-            <motion.div key={index} {...fade} className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-              <div>
-                <h3 className="text-xl font-normal text-white tracking-tight">{edu.degree}</h3>
-                <p className="mt-1 text-sm font-extralight text-[#9a9a9a]">{edu.school}</p>
-              </div>
-              <span className="text-sm text-[#9a9a9a]">{edu.year}</span>
-            </motion.div>
-          ))}
-        </section>
-
-        {/* Footer */}
-        <footer className="pt-16 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <p className="text-sm font-extralight text-[#9a9a9a]">
-            Automation · Systems · Engineering
-          </p>
-          <a
-            href={CV_DATA.links.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ghost-link inline-flex items-center gap-1.5"
+    <>
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            className="loader-screen"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           >
-            GitHub
-            <ArrowUpRight className="w-3.5 h-3.5" />
-          </a>
-        </footer>
-      </div>
-    </main>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="text-center"
+            >
+              <p className="font-mono text-xs tracking-[0.25em] text-gray-500 uppercase mb-3">
+                Portfolio
+              </p>
+              <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
+                Boi-D Holland
+              </h1>
+              <div className="loader-bar mx-auto">
+                <motion.div
+                  className="loader-bar-fill"
+                  initial={{ width: '0%' }}
+                  animate={{ width: `${progress * 100}%` }}
+                  transition={{ ease: 'linear', duration: 0.05 }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <main className="relative min-h-screen w-full overflow-hidden bg-[#050508] text-gray-100">
+        <GlassHeroScene />
+
+        <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-6 py-8 sm:py-10">
+          {/* Nav */}
+          <motion.header
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: loading ? 0 : 1, y: loading ? -16 : 0 }}
+            transition={{ delay: 0.15, duration: 0.55 }}
+            className="glass-panel flex items-center justify-between rounded-full px-5 sm:px-6 py-3"
+          >
+            <div className="flex items-center gap-2.5">
+              <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-[#00f3ff]" />
+              <span className="font-mono text-xs sm:text-sm tracking-wider font-semibold">
+                {CV_DATA.header.name}
+              </span>
+            </div>
+            <nav className="hidden sm:flex items-center gap-6 text-xs font-mono text-gray-400">
+              <a href="#about" className="hover:text-[#00f3ff] transition-colors">About</a>
+              <a href="#experience" className="hover:text-[#00f3ff] transition-colors">Experience</a>
+              <a href="#skills" className="hover:text-[#00f3ff] transition-colors">Skills</a>
+            </nav>
+            <a
+              href={CV_DATA.links.email}
+              className="glass-card flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white"
+            >
+              <span>{CV_DATA.header.status}</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00ff66] animate-pulse" />
+            </a>
+          </motion.header>
+
+          {/* Hero */}
+          <section id="about" className="mt-10 sm:mt-12 flex flex-col gap-5 sm:gap-6">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: loading ? 0 : 1, y: loading ? 24 : 0 }}
+              transition={{ delay: 0.28, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+              className="glass-panel rounded-2xl sm:rounded-3xl p-6 sm:p-8 relative overflow-hidden"
+            >
+              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00f3ff]/40 to-transparent" />
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#00f3ff]/25 bg-[#00f3ff]/8 px-3 py-1 text-xs text-[#00f3ff]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#00f3ff]" />
+                <span>{CV_DATA.header.title}</span>
+              </div>
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-400">
+                {CV_DATA.header.name}
+              </h1>
+              <p className="mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-2xl">
+                {CV_DATA.header.bio}
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3 sm:gap-4">
+                <a
+                  href={CV_DATA.links.email}
+                  className="glass-card group flex items-center gap-2 rounded-xl bg-white/8 px-5 py-2.5 sm:px-6 sm:py-3 font-medium text-white text-sm"
+                >
+                  <Mail className="h-4 w-4 text-[#00f3ff] group-hover:scale-110 transition-transform" />
+                  <span>Get in Touch</span>
+                </a>
+                <a
+                  href={CV_DATA.links.pdfCv}
+                  download="Boi-D-Holland-CV.pdf"
+                  className="glass-card group flex items-center gap-2 rounded-xl px-5 py-2.5 sm:px-6 sm:py-3 font-medium text-gray-300 text-sm"
+                >
+                  <FileText className="h-4 w-4 text-[#00ff66] group-hover:scale-110 transition-transform" />
+                  <span>Download PDF CV</span>
+                </a>
+              </div>
+            </motion.div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+              {CV_DATA.metrics.map((m, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: loading ? 0 : 1, y: loading ? 18 : 0 }}
+                  transition={{ delay: 0.4 + i * 0.08, duration: 0.5 }}
+                  className="glass-card rounded-2xl p-4 sm:p-5"
+                >
+                  <span className="text-xl sm:text-2xl font-extrabold text-[#00f3ff] font-mono tracking-tight">
+                    {m.value}
+                  </span>
+                  <h3 className="text-sm font-semibold text-white mt-1">{m.label}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{m.detail}</p>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* Experience */}
+          <section id="experience" className="mt-14 sm:mt-16">
+            <h2 className="section-label text-xs font-mono tracking-widest text-gray-500 uppercase mb-5 sm:mb-6 flex items-center gap-2">
+              <Briefcase className="h-4 w-4 text-[#00f3ff]" />
+              Professional Experience
+            </h2>
+            <div className="space-y-4 sm:space-y-5">
+              {CV_DATA.experience.map((exp, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-40px' }}
+                  transition={{ duration: 0.5, delay: index * 0.06 }}
+                  className="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
+                    <div>
+                      <h3 className="text-lg sm:text-xl font-bold text-white">{exp.role}</h3>
+                      <p className="text-sm text-[#00f3ff] font-medium mt-0.5">{exp.company}</p>
+                    </div>
+                    <span className="text-xs font-mono text-gray-400 bg-white/5 border border-white/8 px-3 py-1 rounded-full w-fit shrink-0">
+                      {exp.period}
+                    </span>
+                  </div>
+                  <p className="text-sm text-gray-300 mb-4 leading-relaxed">{exp.description}</p>
+                  <ul className="space-y-2">
+                    {exp.highlights.map((item, hIndex) => (
+                      <li key={hIndex} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-400 leading-relaxed">
+                        <CheckCircle2 className="h-3.5 w-3.5 text-[#00ff66] shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* Skills */}
+          <section id="skills" className="mt-14 sm:mt-16">
+            <h2 className="section-label text-xs font-mono tracking-widest text-gray-500 uppercase mb-5 sm:mb-6 flex items-center gap-2">
+              <Cpu className="h-4 w-4 text-[#8a2be2]" />
+              Technical Skills
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+              {CV_DATA.skills.map((group, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.45, delay: index * 0.05 }}
+                  className="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-6"
+                >
+                  <h3 className="text-sm font-semibold text-[#00f3ff] font-mono mb-3.5">
+                    {group.category}
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {group.items.map((skill) => (
+                      <span
+                        key={skill}
+                        className="rounded-lg bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs text-gray-200"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+
+          {/* Education */}
+          <section id="education" className="mt-14 sm:mt-16">
+            <h2 className="section-label text-xs font-mono tracking-widest text-gray-500 uppercase mb-5 sm:mb-6 flex items-center gap-2">
+              <GraduationCap className="h-4 w-4 text-[#00ff66]" />
+              Education & Development
+            </h2>
+            <div className="space-y-3">
+              {CV_DATA.education.map((edu, index) => (
+                <div
+                  key={index}
+                  className="glass-card rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
+                >
+                  <div>
+                    <h3 className="text-base font-bold text-white">{edu.degree}</h3>
+                    <p className="text-xs text-gray-400 mt-0.5">{edu.school}</p>
+                  </div>
+                  <span className="text-xs font-mono text-gray-500 shrink-0">{edu.year}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="mt-16 sm:mt-20 pt-6 sm:pt-8 border-t border-white/6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-gray-500 font-mono">
+            <span>Automation · Systems · Engineering</span>
+            <a
+              href={CV_DATA.links.github}
+              className="hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <Code2 className="h-3.5 w-3.5" />
+              GitHub
+            </a>
+          </footer>
+        </div>
+      </main>
+    </>
   );
 }
