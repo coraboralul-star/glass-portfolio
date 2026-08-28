@@ -6,25 +6,58 @@ body {
   margin: 0;
   background-color: #050508;
   color: #f3f4f6;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Unified Heavy Frosted Glass Utility */
+/* Refined glass */
 .glass-panel,
 .glass-card {
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.03) !important;
+  backdrop-filter: blur(22px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(160%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.09) !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Hover State for Interactive Glass Cards */
-.glass-card:hover {
-  background: rgba(255, 255, 255, 0.07) !important;
-  border-color: rgba(0, 243, 255, 0.4) !important;
-  box-shadow: 0 0 25px rgba(0, 243, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-  transform: translateY(-2px);
+/* Desktop-only richer hover */
+@media (hover: hover) and (pointer: fine) {
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.055) !important;
+    border-color: rgba(0, 243, 255, 0.32) !important;
+    box-shadow:
+      0 14px 40px rgba(0, 0, 0, 0.5),
+      0 0 28px rgba(0, 243, 255, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-3px);
+  }
+}
+
+/* Slightly lighter glass on mobile for performance */
+@media (max-width: 767px) {
+  .glass-panel,
+  .glass-card {
+    backdrop-filter: blur(16px) saturate(140%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  }
+}
+
+.section-label {
+  letter-spacing: 0.14em;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
