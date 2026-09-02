@@ -1,343 +1,251 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Terminal, Cpu, Briefcase, GraduationCap, Mail, FileText, CheckCircle2, Code2
-} from 'lucide-react';
-import GlassHeroScene from './components/GlassHeroScene';
+import React, { useEffect } from "react";
+import { Briefcase, CheckCircle2, Code2, Cpu, FileText, GraduationCap, Mail } from "lucide-react";
+import { audio } from "./lib/audio";
+import { CV_DATA } from "./data/cv";
+import Atmosphere from "./components/Atmosphere";
+import CustomCursor from "./components/CustomCursor";
+import MagneticLink from "./components/MagneticLink";
+import MuteButton from "./components/MuteButton";
+import ScrollProgress from "./components/ScrollProgress";
+import SmoothScroll from "./components/SmoothScroll";
+import StoryEngine from "./components/StoryEngine";
 
-const CV_DATA = {
-  header: {
-    name: "Boi-D Holland",
-    title: "Automation Engineer & Systems Developer",
-    status: "Available for Hire",
-    location: "Remote",
-    bio: "Developer focused on automation systems, process scripting, reverse engineering, and practical web tooling. Experienced building reliable AutoHotkey solutions, memory analysis workflows, production web applications, Discord bots, and efficient Python utilities."
-  },
-  metrics: [
-    { label: "Primary Stack", value: "AHK + Python", detail: "Automation scripts & utilities" },
-    { label: "Analysis", value: "Memory Tools", detail: "Debugging & offset mapping" },
-    { label: "Delivery", value: "Full-Stack", detail: "Web apps, bots & hosting" }
-  ],
-  experience: [
-    {
-      role: "Automation & Systems Engineer",
-      company: "Independent Projects",
-      period: "2024 – Present",
-      description: "Design and maintain automation systems, scripting tools, reverse-engineering workflows, and hosted applications.",
-      highlights: [
-        "Developed advanced AutoHotkey (AHK) macros with direct input hooks, timing logic, and reliable key-event handling.",
-        "Performed memory analysis and reverse engineering using Cheat Engine for debugging, mapping, and real-time value inspection.",
-        "Built and configured development environments integrating modern IDE tooling and protocol-based context servers.",
-        "Shipped and hosted production web applications, micro-sites, and active Discord bots.",
-        "Created Python utility scripts for data handling, automation, and backend support tasks."
-      ]
-    },
-    {
-      role: "Graphics & Interface Designer",
-      company: "Design Projects",
-      period: "2024 (10 months)",
-      description: "Produced digital assets, UI layouts, and visual components for web and interface work.",
-      highlights: [
-        "Created custom visual assets, textures, and banners over an extended production period using Photopea.",
-        "Built UI/UX wireframes and interactive interface mockups in Figma.",
-        "Applied compositional and post-processing work with Adobe Creative Cloud tools."
-      ]
-    },
-    {
-      role: "Automation & Prompt Systems Development",
-      company: "Independent Research",
-      period: "June 2023 – June 2024",
-      description: "Built foundational automation and structured generation workflows.",
-      highlights: [
-        "Designed structured prompt frameworks and automated text/code generation pipelines.",
-        "Developed reusable prompt patterns for reliable single-purpose automation scripts and code synthesis."
-      ]
-    }
-  ],
-  skills: [
-    { category: "Automation & Scripting", items: ["AutoHotkey (AHK)", "Custom Macro Systems", "Python", "Input & Process Control"] },
-    { category: "Reverse Engineering & Analysis", items: ["Cheat Engine", "Memory Analysis", "Debugging", "Offset Mapping"] },
-    { category: "Development Tooling", items: ["Modern IDEs", "Context Protocols", "Structured Prompting", "Workflow Automation"] },
-    { category: "Web & Hosting", items: ["Web Application Hosting", "Discord Bots", "Vite / React", "Tailwind CSS"] },
-    { category: "Design & UI", items: ["Photopea", "Figma", "Adobe Creative Cloud", "Visual Design"] }
-  ],
-  education: [
-    {
-      degree: "Applied Reverse Engineering & Automation Systems",
-      school: "Self-Directed Development & Independent Projects",
-      year: "June 2023 – Present"
-    }
-  ],
-  links: {
-    email: "mailto:hollandboid1@gmail.com",
-    github: "https://github.com/coraboralul-star",
-    pdfCv: "/Boi-D-Holland-CV.pdf"
-  }
-};
+function jumpTo(id) {
+  const target = document.querySelector(id);
+  if (!target) return;
+  window.__lenis?.start();
+  if (window.__lenis) window.__lenis.scrollTo(target, { offset: 0 });
+  else target.scrollIntoView({ behavior: "smooth" });
+}
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
-
   useEffect(() => {
-    const start = Date.now();
-    const duration = 1600;
-    const tick = () => {
-      const p = Math.min(1, (Date.now() - start) / duration);
-      setProgress(p);
-      if (p < 1) requestAnimationFrame(tick);
-      else setTimeout(() => setLoading(false), 220);
+    const unlock = async () => {
+      await audio.unlock();
+      audio.enter();
     };
-    requestAnimationFrame(tick);
+    const onFirst = () => {
+      unlock();
+      window.removeEventListener("pointerdown", onFirst);
+    };
+    window.addEventListener("pointerdown", onFirst, { once: true });
+
+    let last = null;
+    const onOver = (event) => {
+      const hit = event.target.closest("a, button");
+      if (hit && hit !== last) {
+        last = hit;
+        audio.hover();
+      }
+      if (!hit) last = null;
+    };
+    const onClick = (event) => {
+      if (event.target.closest("a, button")) audio.tick();
+    };
+    document.addEventListener("pointerover", onOver);
+    document.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("pointerdown", onFirst);
+      document.removeEventListener("pointerover", onOver);
+      document.removeEventListener("click", onClick);
+    };
   }, []);
 
   return (
     <>
-      <AnimatePresence>
-	  {loading && (
-		<motion.div
-		  className="loader-screen"
-		  initial={{ opacity: 1 }}
-		  exit={{ opacity: 0, scale: 1.02 }}
-		  transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-		>
-		  {/* Goo background blobs */}
-		  <div className="loader-goo" />
-		  <div className="loader-goo-2" />
+      <CustomCursor />
+      <Atmosphere />
+      <SmoothScroll />
+      <ScrollProgress active />
+      <MuteButton audio={audio} />
 
-		  <motion.div
-			initial={{ opacity: 0, y: 18, filter: 'blur(8px)' }}
-			animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-			transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-			className="relative z-10 text-center"
-		  >
-			<motion.p
-			  initial={{ opacity: 0 }}
-			  animate={{ opacity: 1 }}
-			  transition={{ delay: 0.15 }}
-			  className="font-mono text-[11px] tracking-[0.3em] text-violet-300/70 uppercase mb-4"
-			>
-			  Loading
-			</motion.p>
+      <header className="chrome">
+        <a href="#intro" className="chrome-name">
+          {CV_DATA.header.name}
+        </a>
+        <nav className="chrome-nav">
+          <a href="#path">Path</a>
+          <a href="#experience">Work</a>
+          <a href="#skills">Skills</a>
+        </nav>
+        <a href={CV_DATA.links.email} className="chrome-status">
+          {CV_DATA.header.status}
+          <span className="status-dot" />
+        </a>
+      </header>
 
-			<motion.h1
-			  initial={{ opacity: 0, letterSpacing: '0.15em' }}
-			  animate={{ opacity: 1, letterSpacing: '0.02em' }}
-			  transition={{ delay: 0.25, duration: 0.8 }}
-			  className="text-3xl sm:text-4xl font-semibold tracking-tight text-white"
-			>
-			  Boi-D Holland
-			</motion.h1>
-
-			<div className="loader-bar mx-auto">
-			  <motion.div
-				className="loader-bar-fill"
-				initial={{ width: '0%' }}
-				animate={{ width: `${progress * 100}%` }}
-				transition={{ ease: 'linear', duration: 0.08 }}
-			  />
-			</div>
-		  </motion.div>
-		</motion.div>
-	  )}
-	</AnimatePresence>
-
-      <main className="relative min-h-screen w-full overflow-hidden bg-[#030305] text-gray-100">
-        <GlassHeroScene />
-
-        <div className="relative z-10 mx-auto max-w-5xl px-5 sm:px-6 py-8 sm:py-10">
-          {/* Nav */}
-          <motion.header
-            initial={{ opacity: 0, y: -16 }}
-            animate={{ opacity: loading ? 0 : 1, y: loading ? -16 : 0 }}
-            transition={{ delay: 0.15, duration: 0.55 }}
-            className="glass-panel flex items-center justify-between rounded-full px-5 sm:px-6 py-3"
-          >
-            <div className="flex items-center gap-2.5">
-              <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-[#00f3ff]" />
-              <span className="font-mono text-xs sm:text-sm tracking-wider font-semibold">
-                {CV_DATA.header.name}
-              </span>
+      <StoryEngine>
+        <section id="intro" className="intro-pin">
+          <div className="intro-sticky">
+            <p className="eyebrow">Automation · Systems · Engineering</p>
+            <h1 className="display-name">
+              Boi-D
+              <br />
+              Holland
+            </h1>
+            <p className="intro-title">{CV_DATA.header.title}</p>
+            <p className="intro-bio">{CV_DATA.header.bio}</p>
+            <div className="intro-actions">
+              <MagneticLink href={CV_DATA.links.email} className="cta cta-solid">
+                <Mail className="cta-icon" />
+                Get in Touch
+              </MagneticLink>
+              <MagneticLink
+                href={CV_DATA.links.pdfCv}
+                download="Boi-D-Holland-CV.pdf"
+                className="cta"
+              >
+                <FileText className="cta-icon" />
+                Download PDF CV
+              </MagneticLink>
             </div>
-            <nav className="hidden sm:flex items-center gap-6 text-xs font-mono text-gray-400">
-              <a href="#about" className="hover:text-[#00f3ff] transition-colors">About</a>
-              <a href="#experience" className="hover:text-[#00f3ff] transition-colors">Experience</a>
-              <a href="#skills" className="hover:text-[#00f3ff] transition-colors">Skills</a>
-            </nav>
-            <a
-              href={CV_DATA.links.email}
-              className="glass-card flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white"
-            >
-              <span>{CV_DATA.header.status}</span>
-              <span className="h-1.5 w-1.5 rounded-full bg-[#00ff66] animate-pulse" />
-            </a>
-          </motion.header>
-
-          {/* Hero */}
-          <section id="about" className="mt-10 sm:mt-12 flex flex-col gap-5 sm:gap-6">
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: loading ? 0 : 1, y: loading ? 24 : 0 }}
-              transition={{ delay: 0.28, duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-              className="glass-panel rounded-2xl sm:rounded-3xl p-6 sm:p-8 relative overflow-hidden"
-            >
-              <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#00f3ff]/40 to-transparent" />
-              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#00f3ff]/25 bg-[#00f3ff]/8 px-3 py-1 text-xs text-[#00f3ff]">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#00f3ff]" />
-                <span>{CV_DATA.header.title}</span>
-              </div>
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-100 to-gray-400">
-                {CV_DATA.header.name}
-              </h1>
-              <p className="mt-4 text-gray-300 text-sm sm:text-base leading-relaxed max-w-2xl">
-                {CV_DATA.header.bio}
-              </p>
-              <div className="mt-7 flex flex-wrap gap-3 sm:gap-4">
-                <a
-                  href={CV_DATA.links.email}
-                  className="glass-card group flex items-center gap-2 rounded-xl bg-white/8 px-5 py-2.5 sm:px-6 sm:py-3 font-medium text-white text-sm"
-                >
-                  <Mail className="h-4 w-4 text-[#00f3ff] group-hover:scale-110 transition-transform" />
-                  <span>Get in Touch</span>
-                </a>
-                <a
-                  href={CV_DATA.links.pdfCv}
-                  download="Boi-D-Holland-CV.pdf"
-                  className="glass-card group flex items-center gap-2 rounded-xl px-5 py-2.5 sm:px-6 sm:py-3 font-medium text-gray-300 text-sm"
-                >
-                  <FileText className="h-4 w-4 text-[#00ff66] group-hover:scale-110 transition-transform" />
-                  <span>Download PDF CV</span>
-                </a>
-              </div>
-            </motion.div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-              {CV_DATA.metrics.map((m, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: loading ? 0 : 1, y: loading ? 18 : 0 }}
-                  transition={{ delay: 0.4 + i * 0.08, duration: 0.5 }}
-                  className="glass-card rounded-2xl p-4 sm:p-5"
-                >
-                  <span className="text-xl sm:text-2xl font-extrabold text-[#00f3ff] font-mono tracking-tight">
-                    {m.value}
-                  </span>
-                  <h3 className="text-sm font-semibold text-white mt-1">{m.label}</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">{m.detail}</p>
-                </motion.div>
+            <div className="intro-metrics">
+              {CV_DATA.metrics.map((m) => (
+                <div key={m.label} className="metric">
+                  <strong>{m.value}</strong>
+                  <span>{m.label}</span>
+                  <em>{m.detail}</em>
+                </div>
               ))}
             </div>
-          </section>
+            <p className="cover-hint">
+              <span className="hint-line" />
+              Scroll
+            </p>
+          </div>
+        </section>
 
-          {/* Experience */}
-          <section id="experience" className="mt-14 sm:mt-16">
-            <h2 className="section-label text-xs font-mono tracking-widest text-gray-500 uppercase mb-5 sm:mb-6 flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-[#00f3ff]" />
+        <section id="path" className="fork-pin">
+          <div className="fork-sticky">
+            <div className="fork-copy">
+              <p className="chapter-index">02</p>
+              <p className="eyebrow">Choose a path</p>
+              <h2 className="fork-title">Where next.</h2>
+            </div>
+            <div className="fork-stage">
+              <svg className="fork-svg" viewBox="0 0 400 240" fill="none" aria-hidden="true">
+                <path className="fork-line fork-stem" pathLength="1" d="M200 88 V8" />
+                <path className="fork-line fork-branch" pathLength="1" d="M72 214 C72 156 200 148 200 88" />
+                <path className="fork-line fork-branch" pathLength="1" d="M200 214 V88" />
+                <path className="fork-line fork-branch" pathLength="1" d="M328 214 C328 156 200 148 200 88" />
+              </svg>
+              <div className="fork-nodes">
+                <button type="button" className="fork-node" onClick={() => jumpTo("#experience")}>
+                  <Briefcase className="fork-icon" />
+                  <span className="fork-label">Experience</span>
+                  <span className="fork-sub">The work</span>
+                </button>
+                <button type="button" className="fork-node" onClick={() => jumpTo("#skills")}>
+                  <Cpu className="fork-icon" />
+                  <span className="fork-label">Technical Skills</span>
+                  <span className="fork-sub">The stack</span>
+                </button>
+                <button type="button" className="fork-node" onClick={() => jumpTo("#education")}>
+                  <GraduationCap className="fork-icon" />
+                  <span className="fork-label">Education & Development</span>
+                  <span className="fork-sub">The path in</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="experience" className="exp-pin">
+          <div className="exp-sticky">
+            <p className="chapter-index">03</p>
+            <p className="eyebrow">
+              <Briefcase className="inline-icon" />
               Professional Experience
-            </h2>
-            <div className="space-y-4 sm:space-y-5">
+            </p>
+            <div className="exp-frame">
               {CV_DATA.experience.map((exp, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ duration: 0.5, delay: index * 0.06 }}
-                  className="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-7"
-                >
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-3">
-                    <div>
-                      <h3 className="text-lg sm:text-xl font-bold text-white">{exp.role}</h3>
-                      <p className="text-sm text-[#00f3ff] font-medium mt-0.5">{exp.company}</p>
-                    </div>
-                    <span className="text-xs font-mono text-gray-400 bg-white/5 border border-white/8 px-3 py-1 rounded-full w-fit shrink-0">
-                      {exp.period}
+                <article key={exp.role} className="exp-slide">
+                  <div className="exp-meta">
+                    <span className="exp-count">
+                      {String(index + 1).padStart(2, "0")} / {String(CV_DATA.experience.length).padStart(2, "0")}
                     </span>
+                    <span className="exp-period">{exp.period}</span>
                   </div>
-                  <p className="text-sm text-gray-300 mb-4 leading-relaxed">{exp.description}</p>
-                  <ul className="space-y-2">
-                    {exp.highlights.map((item, hIndex) => (
-                      <li key={hIndex} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-400 leading-relaxed">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-[#00ff66] shrink-0 mt-0.5" />
+                  <h3 className="exp-role">{exp.role}</h3>
+                  <p className="exp-company">{exp.company}</p>
+                  <p className="exp-copy">{exp.description}</p>
+                  <ul className="exp-list">
+                    {exp.highlights.map((item) => (
+                      <li key={item}>
+                        <CheckCircle2 className="tick" />
                         <span>{item}</span>
                       </li>
                     ))}
                   </ul>
-                </motion.div>
+                </article>
               ))}
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* Skills */}
-          <section id="skills" className="mt-14 sm:mt-16">
-            <h2 className="section-label text-xs font-mono tracking-widest text-gray-500 uppercase mb-5 sm:mb-6 flex items-center gap-2">
-              <Cpu className="h-4 w-4 text-[#8a2be2]" />
-              Technical Skills
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-              {CV_DATA.skills.map((group, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, delay: index * 0.05 }}
-                  className="glass-card rounded-2xl sm:rounded-3xl p-5 sm:p-6"
-                >
-                  <h3 className="text-sm font-semibold text-[#00f3ff] font-mono mb-3.5">
-                    {group.category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {group.items.map((skill) => (
-                      <span
-                        key={skill}
-                        className="rounded-lg bg-white/5 border border-white/10 px-2.5 py-1.5 text-xs text-gray-200"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </section>
-
-          {/* Education */}
-          <section id="education" className="mt-14 sm:mt-16">
-            <h2 className="section-label text-xs font-mono tracking-widest text-gray-500 uppercase mb-5 sm:mb-6 flex items-center gap-2">
-              <GraduationCap className="h-4 w-4 text-[#00ff66]" />
-              Education & Development
-            </h2>
-            <div className="space-y-3">
-              {CV_DATA.education.map((edu, index) => (
-                <div
-                  key={index}
-                  className="glass-card rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2"
-                >
-                  <div>
-                    <h3 className="text-base font-bold text-white">{edu.degree}</h3>
-                    <p className="text-xs text-gray-400 mt-0.5">{edu.school}</p>
-                  </div>
-                  <span className="text-xs font-mono text-gray-500 shrink-0">{edu.year}</span>
+        <section id="skills" className="skills-stage">
+          <p className="chapter-index">04</p>
+          <p className="eyebrow">
+            <Cpu className="inline-icon" />
+            Technical Skills
+          </p>
+          <h2 className="stage-title">The stack.</h2>
+          <div className="skill-list">
+            {CV_DATA.skills.map((group, index) => (
+              <div key={group.category} className="skill-row">
+                <span className="skill-no">{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3>{group.category}</h3>
+                  <p>{group.items.join("  ·  ")}</p>
                 </div>
-              ))}
-            </div>
-          </section>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          {/* Footer */}
-          <footer className="mt-16 sm:mt-20 pt-6 sm:pt-8 border-t border-white/6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 text-xs text-gray-500 font-mono">
-            <span>Automation · Systems · Engineering</span>
-            <a
-              href={CV_DATA.links.github}
-              className="hover:text-white transition-colors flex items-center gap-1.5"
+        <section id="education" className="edu-stage">
+          <div className="edu-panel">
+            <p className="chapter-index">05</p>
+            <p className="eyebrow">
+              <GraduationCap className="inline-icon" />
+              Education & Development
+            </p>
+            {CV_DATA.education.map((edu) => (
+              <div key={edu.degree}>
+                <h2 className="edu-degree">{edu.degree}</h2>
+                <p className="edu-school">{edu.school}</p>
+                <p className="edu-year">{edu.year}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <footer id="contact" className="close-stage">
+          <p className="eyebrow">Available for hire</p>
+          <h2 className="stage-title">Next move.</h2>
+          <div className="intro-actions">
+            <MagneticLink href={CV_DATA.links.email} className="cta cta-solid">
+              <Mail className="cta-icon" />
+              Get in Touch
+            </MagneticLink>
+            <MagneticLink
+              href={CV_DATA.links.pdfCv}
+              download="Boi-D-Holland-CV.pdf"
+              className="cta"
             >
-              <Code2 className="h-3.5 w-3.5" />
+              <FileText className="cta-icon" />
+              Download PDF CV
+            </MagneticLink>
+          </div>
+          <div className="close-foot">
+            <span>Automation · Systems · Engineering</span>
+            <a href={CV_DATA.links.github}>
+              <Code2 className="inline-icon" />
               GitHub
             </a>
-          </footer>
-        </div>
-      </main>
+          </div>
+        </footer>
+      </StoryEngine>
     </>
   );
 }
