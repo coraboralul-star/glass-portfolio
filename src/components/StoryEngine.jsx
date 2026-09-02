@@ -3,8 +3,7 @@ import gsap from "gsap";
 import { Observer } from "gsap/Observer";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { isMobileViewport, prefersReducedMotion } from "../lib/prefs";
-
+import { CINEMATIC_STORY_QUERY, STATIC_STORY_QUERY } from "../lib/prefs";
 gsap.registerPlugin(Observer, ScrollTrigger);
 
 function holdWheel(self) {
@@ -111,13 +110,30 @@ export default function StoryEngine({ children }) {
       const wrap = root.current;
       if (!wrap) return undefined;
 
-      const staticMode = prefersReducedMotion() || isMobileViewport();
-      wrap.classList.toggle("story-static", staticMode);
+      const mm = gsap.matchMedia();
 
-      if (staticMode) {
-        ScrollTrigger.getAll().forEach((t) => t.kill());
-        return undefined;
-      }
+      mm.add(STATIC_STORY_QUERY, () => {
+        wrap.classList.add("story-static");
+        gsap.set(
+          [
+            ".display-name",
+            ".intro-title",
+            ".intro-bio",
+            ".intro-actions",
+            ".intro-metrics",
+            ".fork-copy > *",
+            ".fork-node",
+            ".fork-line",
+            ".exp-slide",
+          ],
+          { clearProps: "all" },
+        );
+        gsap.set(".fork-line", { strokeDashoffset: 0 });
+        return () => wrap.classList.remove("story-static");
+      });
+
+      mm.add(CINEMATIC_STORY_QUERY, () => {
+      wrap.classList.remove("story-static");
 
       const name = wrap.querySelector(".display-name");
       const title = wrap.querySelector(".intro-title");
@@ -149,7 +165,7 @@ export default function StoryEngine({ children }) {
         .to(
           name,
           {
-            fontSize: "clamp(2.4rem, 6vw, 3.6rem)",
+            fontSize: "clamp(2.2rem, 5.2vmin, 3.4rem)",
             duration: 0.45,
           },
           1.05,
@@ -286,6 +302,9 @@ export default function StoryEngine({ children }) {
         });
         ScrollTrigger.getAll().forEach((t) => t.kill());
       };
+      });
+
+      return () => mm.revert();
     },
     { scope: root },
   );

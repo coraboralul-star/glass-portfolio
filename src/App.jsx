@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Briefcase, CheckCircle2, Code2, Cpu, FileText, GraduationCap, Mail } from "lucide-react";
 import { audio } from "./lib/audio";
+import { startViewportScale } from "./lib/scale";
 import { CV_DATA } from "./data/cv";
 import Atmosphere from "./components/Atmosphere";
 import CustomCursor from "./components/CustomCursor";
@@ -20,6 +21,7 @@ function jumpTo(id) {
 
 export default function App() {
   useEffect(() => {
+    const stopScale = startViewportScale();
     const unlock = async () => {
       await audio.unlock();
       audio.enter();
@@ -45,6 +47,7 @@ export default function App() {
     document.addEventListener("pointerover", onOver);
     document.addEventListener("click", onClick);
     return () => {
+      stopScale();
       window.removeEventListener("pointerdown", onFirst);
       document.removeEventListener("pointerover", onOver);
       document.removeEventListener("click", onClick);
